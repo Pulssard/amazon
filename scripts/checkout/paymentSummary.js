@@ -1,21 +1,22 @@
-import {getCart, updateCartQuantity} from '../../data/cart.js'
 import { getProduct } from '../../data/products.js'
 import { getDeliveryOption } from '../../data/deliveryOptions.js';
 import { formatCurrency } from '../utils/money.js';
+import cartObj from '../../data/cart.js';
+import { addOrder } from '../../data/orders.js';
 
- export function renderPaymentSummary(){
-    const cart = getCart();
+ export async function renderPaymentSummary(){
+    const cart = cartObj.cart;
 
     let productPriceCents = 0;
     let shippingPriceCents = 0;    
 
-    cart.forEach(cartItem => {
-        const product = getProduct(cartItem.productId);
+    for(const cartItem of cart) {
+        const product = await getProduct(cartItem.productId);
         productPriceCents += product.priceCents * cartItem.quantity;
 
         const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId);
         shippingPriceCents += deliveryOption.priceCents;
-    });
+    };
 
     const totalBeforeTaxCents = productPriceCents + shippingPriceCents;
     const taxCents = totalBeforeTaxCents * 0.1;
@@ -27,7 +28,7 @@ import { formatCurrency } from '../utils/money.js';
         </div>
 
         <div class="payment-summary-row">
-            <div>Items (${updateCartQuantity()}):</div>
+            <div>Items (${cartObj.updateCartQuantity()}):</div>
             <div class="payment-summary-money">$${formatCurrency(productPriceCents)}</div>
         </div>
 
@@ -57,4 +58,28 @@ import { formatCurrency } from '../utils/money.js';
     `;
 
     document.querySelector('.payment-summary').innerHTML = paymentSummaryHTML;
+
+    document.querySelector('.place-order-button')
+        .addEventListener('click', async () => {
+            try{
+                const response = await fetch('https://supersimplebackend.dev/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cart: cart
+                    })
+                });
+    
+               const order = await response.json();
+               console.log(order)
+               addOrder(order);
+            } catch(err) {
+                console.log(err);
+            }
+
+            window.location.href = 'orders.html';
+        });
 };
+

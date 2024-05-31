@@ -19,15 +19,18 @@ const deliveryOptions = [
 ];
 
 export function getDeliveryOption(deliveryOptionId) {
+
     let deliveryOption;
+
     deliveryOptions.forEach(option => {
       if(option.id === deliveryOptionId) deliveryOption=option;
     });
+
     return deliveryOption || deliveryOption[0];
 };
 
-export function calculateDeliveryDate(deliveryOption) {
-    let deliveryDate = dayjs();
+export function calculateDeliveryDate(deliveryOption, deliveryDateArg ) {
+    let deliveryDate = deliveryDateArg ? dayjs(deliveryDateArg) : dayjs();
 
     let addShippingDays = deliveryOption.deliveryDays;
 
@@ -40,8 +43,24 @@ export function calculateDeliveryDate(deliveryOption) {
     }
 
     const formattedDeliveryDate = deliveryDate.format('dddd, MMMM D');
+    
+    return {formattedDeliveryDate,deliveryDate};
+};
 
-    return formattedDeliveryDate;
+export function getDeliveryDate(estimatedDeliveryTime,orderTime){
+    const deliveryDays = Math.round((dayjs(estimatedDeliveryTime) - dayjs(orderTime))/86400000);
+    function getId(deliveryDays){
+        let id;
+        if(deliveryDays === 7) id='1';
+        if(deliveryDays === 3) id='2';
+        if(deliveryDays === 1) id='3';
+        return id;
+    };
+    const deliveryOptionId =  getId(deliveryDays);
+    const deliveryOption = getDeliveryOption(deliveryOptionId);
+
+    const deliveryDate = calculateDeliveryDate(deliveryOption, orderTime);
+    return deliveryDate;
 }
 
 export default deliveryOptions;

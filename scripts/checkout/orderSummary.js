@@ -1,26 +1,25 @@
-import  {removeProducts, updateDeliveryOption, updateCartQuantity, updateQuantity, getCart} from '../../data/cart.js';
 import {getProduct} from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
 import deliveryOptions, { calculateDeliveryDate, getDeliveryOption } from '../../data/deliveryOptions.js';
 import {renderPaymentSummary} from './paymentSummary.js';
+import cartObj from '../../data/cart.js';
 
+export async function renderOrderSummary() {
+  const cart =  cartObj.cart;
 
-export function renderOrderSummary() {
   let html = '';
 
-  const cart = getCart();
-
-  cart.forEach(cartItem => {
-    const product = getProduct(cartItem.productId);
-
+  for (const cartItem of cart) {
+    const product = await getProduct(cartItem.productId);
+    
     const deliveryOptionId = cartItem.deliveryOptionId;
     const deliveryOption = getDeliveryOption(deliveryOptionId);
     const deliveryDate = calculateDeliveryDate(deliveryOption);
-
+    console.log(deliveryDate)
       html += `
       <div class="cart-item-container cart-item-container-${cartItem.productId}">
       <div class="delivery-date">
-        Delivery date: ${deliveryDate}
+        Delivery date: ${ deliveryDate.formattedDeliveryDate}
       </div>
 
       <div class="cart-item-details-grid">
@@ -57,8 +56,10 @@ export function renderOrderSummary() {
         </div>
       </div>
     </div>
-      `
-  });
+      ` 
+  };
+
+  
 
   function deliveryOptionsHTML(cartItem) {
     let html = '';
@@ -74,7 +75,7 @@ export function renderOrderSummary() {
           name="delivery-option-${cartItem.productId}">
         <div>
           <div class="delivery-option-date">
-            ${deliveryDate}
+            ${deliveryDate.formattedDeliveryDate}
           </div>
           <div class="delivery-option-price">
             $${shippingPrice} - Shipping
@@ -88,6 +89,7 @@ export function renderOrderSummary() {
   document.querySelector('.order-summary').innerHTML = html;
 
   const updateButtons = document.querySelectorAll('.update-quantity-link');
+
   updateButtons.forEach(updateBtn => {
     updateBtn.addEventListener('click', function(){
       const productId = updateBtn.dataset.productId;
@@ -103,13 +105,14 @@ export function renderOrderSummary() {
       alert('Input invalid. Please select a quantity between 1 and 999');
       return;
     }
-    updateQuantity(productId, newQuantity);
-    updateCartQuantity('.checkout-items');
+    cartObj.updateQuantity(productId, newQuantity);
+    cartObj.updateCartQuantity('.checkout-items');
     renderOrderSummary();
     renderPaymentSummary(); 
-  }
+  };
 
   const saveButtons = document.querySelectorAll('.save-quantity-link');
+
   saveButtons.forEach(saveBtn => {
     saveBtn.addEventListener('click', e => saveNewInput(e.target.dataset.productId));
   });
@@ -119,14 +122,13 @@ export function renderOrderSummary() {
       if(e.key === 'Enter') saveNewInput(productId);
   });
 
-  //updateCartQuantity('.checkout-items');
-
+  
   const deleteBtns = document.querySelectorAll('.delete-quantity-link');
 
   deleteBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         const productId = btn.dataset.productId;
-        removeProducts(productId);
+        cartObj.removeProducts(productId);
         renderOrderSummary();
         renderPaymentSummary();
       });    
@@ -137,10 +139,12 @@ export function renderOrderSummary() {
       el.addEventListener('click', () => {
         const {productId} = el.dataset;
         const {deliveryOptionId} = el.dataset;
-        updateDeliveryOption(productId, deliveryOptionId);
+        cartObj.updateDeliveryOption(productId, deliveryOptionId);
         renderOrderSummary();
         renderPaymentSummary();
-      })
-    })
-  
+      });
+    });
+
+    cartObj.updateCartQuantity('.checkout-items');
+
 };
