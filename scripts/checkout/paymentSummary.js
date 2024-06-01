@@ -4,6 +4,7 @@ import { formatCurrency } from '../utils/money.js';
 import cartObj from '../../data/cart.js';
 import { addOrder } from '../../data/orders.js';
 
+
  export async function renderPaymentSummary(){
     const cart = cartObj.cart;
 

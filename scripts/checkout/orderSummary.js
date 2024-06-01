@@ -15,7 +15,7 @@ export async function renderOrderSummary() {
     const deliveryOptionId = cartItem.deliveryOptionId;
     const deliveryOption = getDeliveryOption(deliveryOptionId);
     const deliveryDate = calculateDeliveryDate(deliveryOption);
-    console.log(deliveryDate)
+
       html += `
       <div class="cart-item-container cart-item-container-${cartItem.productId}">
       <div class="delivery-date">

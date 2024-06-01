@@ -99,3 +99,23 @@ select:focus,
 input:focus {
   outline: 2px solid rgb(255, 153, 0);
 }
+
+.pagination{
+  justify-content: center;
+  margin-top:2.2rem;
+}
+
+.page-link{
+  color:black;
+}
+.page-link:hover{
+  color:black;
+}
+
+.page-item > .active{
+  border-color: black ;
+}
+
+.pagination .active{
+  background-color:#ffc107;
+}

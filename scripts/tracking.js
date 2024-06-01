@@ -2,7 +2,7 @@ import { getProduct } from "../data/products.js";
 import { getOrder } from "../data/orders.js";
 import cartObj from "../data/cart.js";
 import { getDeliveryDate } from "../data/deliveryOptions.js";
-import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
+import dayjs from 'dayjs';
 
 async function renderTrackingHTML() {
     const url = new URL(window.location.href);
@@ -15,6 +15,7 @@ async function renderTrackingHTML() {
     const {quantity, estimatedDeliveryTime} =  order.products.find(product => product.productId === productId);
     
     const deliveryDate = getDeliveryDate(estimatedDeliveryTime, order.orderTime)
+
     const currentTime = dayjs();
     const orderTime = dayjs(order.orderTime);
     const deliveryTime = dayjs(deliveryDate.deliveryDate);
