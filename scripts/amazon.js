@@ -2,6 +2,7 @@ import { loadProducts } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 import cartObj from '../data/cart.js';
 
+
 async function loadHomePage(){
 
   let products = await loadProducts();
@@ -29,6 +30,7 @@ async function loadHomePage(){
     const lastProd = productsPerPage * pageTracker;
     
     products.slice(firstProd,lastProd).forEach((product) => {
+
       html += `
       <div class="product-container">
       <div class="product-image-container">
@@ -138,7 +140,7 @@ async function loadHomePage(){
     .forEach(pageNum => {
       pageNum.addEventListener('click', function(){
         pageTracker = +pageNum.textContent;
-        const newUrl = `amazon.html?page=${pageTracker}`;
+        const newUrl = `index.html?page=${pageTracker}`;
         window.history.pushState({ path: newUrl }, '', newUrl);
         renderHomePageHTML();
         renderPaginationHTML();
