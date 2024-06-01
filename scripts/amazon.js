@@ -116,13 +116,13 @@ async function loadHomePage(){
   document.querySelector('.search-button')
     .addEventListener('click', async function(){
       const searchParam = await document.querySelector('.search-bar').value;
-      window.location.href = `amazon.html?search=${searchParam}`;
+      window.location.href = `index.html?search=${searchParam}`;
     });
 
     window.addEventListener('keydown', async function(e){
       if(e.key === 'Enter'){
         const searchParam = await document.querySelector('.search-bar').value;
-        window.location.href = `amazon.html?search=${searchParam}`;
+        window.location.href = `index.html?search=${searchParam}`;
       }
     });
 

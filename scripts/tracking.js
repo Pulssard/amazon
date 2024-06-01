@@ -3,6 +3,7 @@ import { getOrder } from "../data/orders.js";
 import cartObj from "../data/cart.js";
 import { getDeliveryDate } from "../data/deliveryOptions.js";
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
+
 async function renderTrackingHTML() {
     const url = new URL(window.location.href);
     const productId = url.searchParams.get('productId');
