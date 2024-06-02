@@ -1,5 +1,7 @@
 import {formatCurrency} from '../scripts/utils/money.js';
 
+export const PRODUCTS_PER_PAGE = 12;
+
 export async function getProduct(productId) {
   const products = await fetchProducts();
   const product = products.find(prod => 

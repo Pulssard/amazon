@@ -96,7 +96,7 @@
 }
 
 .product-name {
-  height: 40px;
+  height: 45px;
   margin-bottom: 5px;
 }
 
@@ -153,4 +153,28 @@
   width: 100%;
   padding: 8px;
   border-radius: 50px;
+}
+
+
+.spinner {
+  margin: 5rem auto;
+  text-align: center;
+  
+}
+
+.spinner > svg{
+  height: 6rem;
+  width: 6rem;
+  fill: #ffc107;
+  animation: rotate 2s infinite linear;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

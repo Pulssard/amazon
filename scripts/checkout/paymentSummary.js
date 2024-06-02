@@ -10,20 +10,20 @@ import { addOrder } from '../../data/orders.js';
 
     let productPriceCents = 0;
     let shippingPriceCents = 0;    
+    if(cart){
+        for(const cartItem of cart) {
+            const product = await getProduct(cartItem.productId);
+            productPriceCents += product.priceCents * cartItem.quantity;
 
-    for(const cartItem of cart) {
-        const product = await getProduct(cartItem.productId);
-        productPriceCents += product.priceCents * cartItem.quantity;
-
-        const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId);
-        shippingPriceCents += deliveryOption.priceCents;
+            const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId);
+            shippingPriceCents += deliveryOption.priceCents;
+        };
     };
-
     const totalBeforeTaxCents = productPriceCents + shippingPriceCents;
     const taxCents = totalBeforeTaxCents * 0.1;
     const totalCents = totalBeforeTaxCents + taxCents;
 
-    const paymentSummaryHTML = `
+    let paymentSummaryHTML = `
          <div class="payment-summary-title">
             Order Summary
         </div>
@@ -58,9 +58,11 @@ import { addOrder } from '../../data/orders.js';
         </button>
     `;
 
-    document.querySelector('.payment-summary').innerHTML = paymentSummaryHTML;
+    if(cart.length === 0) {
+        paymentSummaryHTML = '';
 
-    document.querySelector('.place-order-button')
+    }else{
+        document.querySelector('.place-order-button')
         .addEventListener('click', async () => {
             try{
                 const response = await fetch('https://supersimplebackend.dev/orders', {
@@ -74,13 +76,16 @@ import { addOrder } from '../../data/orders.js';
                 });
     
                const order = await response.json();
-               console.log(order)
                addOrder(order);
             } catch(err) {
                 console.log(err);
             }
-
+            cartObj.emptyCart();
             window.location.href = 'orders.html';
         });
+    }
+    document.querySelector('.payment-summary').innerHTML = paymentSummaryHTML;
+
+    
 };
 

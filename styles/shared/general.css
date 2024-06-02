@@ -119,3 +119,7 @@ input:focus {
 .pagination .active{
   background-color:#ffc107;
 }
+
+.empty-message{
+  color: gray;
+}

@@ -49,14 +49,19 @@ export function calculateDeliveryDate(deliveryOption, deliveryDateArg ) {
 
 export function getDeliveryDate(estimatedDeliveryTime,orderTime){
     const deliveryDays = Math.round((dayjs(estimatedDeliveryTime) - dayjs(orderTime))/86400000);
-    function getId(deliveryDays){
+    /*function getId(deliveryDays){
         let id;
         if(deliveryDays === 7) id='1';
         if(deliveryDays === 3) id='2';
         if(deliveryDays === 1) id='3';
         return id;
-    };
-    const deliveryOptionId =  getId(deliveryDays);
+    };*/
+
+    const deliveryOptionId = deliveryOptions.find(option => {
+        option.deliveryDays === deliveryDays;
+        return option.id;
+    });
+    //const deliveryOptionId =  getId(deliveryDays);
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
     const deliveryDate = calculateDeliveryDate(deliveryOption, orderTime);

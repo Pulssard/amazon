@@ -8,59 +8,62 @@ export async function renderOrderSummary() {
   const cart =  cartObj.cart;
 
   let html = '';
+  console.log(cart)
+  if(cart.length > 0){
+    for (const cartItem of cart) {
+      const product = await getProduct(cartItem.productId);
+      
+      const deliveryOptionId = cartItem.deliveryOptionId;
+      const deliveryOption = getDeliveryOption(deliveryOptionId);
+      const deliveryDate = calculateDeliveryDate(deliveryOption);
 
-  for (const cartItem of cart) {
-    const product = await getProduct(cartItem.productId);
-    
-    const deliveryOptionId = cartItem.deliveryOptionId;
-    const deliveryOption = getDeliveryOption(deliveryOptionId);
-    const deliveryDate = calculateDeliveryDate(deliveryOption);
-
-      html += `
-      <div class="cart-item-container cart-item-container-${cartItem.productId}">
-      <div class="delivery-date">
-        Delivery date: ${ deliveryDate.formattedDeliveryDate}
-      </div>
-
-      <div class="cart-item-details-grid">
-        <img class="product-image"
-          src="${product.image}">
-
-        <div class="cart-item-details">
-          <div class="product-name">
-          ${product.name}
-          </div>
-          <div class="product-price">
-            $${formatCurrency(product.priceCents)}
-          </div>
-          <div class="product-quantity product-quantity-${cartItem.productId}">
-            <span >
-              Quantity: <span class="quantity-label quantity-label-${cartItem.productId}">${cartItem.quantity}</span>
-            </span>
-            <span class="update-quantity-link link-primary" data-product-id=${cartItem.productId}>
-              Update
-            </span>
-              <input class="quantity-input quantity-input-${cartItem.productId}" data-product-id=${cartItem.productId} type="number" value=${cartItem.quantity} min="1">
-              <span class="save-quantity-link link-primary" data-product-id=${cartItem.productId}>Save</span>
-            <span class="delete-quantity-link link-primary delete-quantity-link-${cartItem.productId}" data-product-id=${cartItem.productId}>
-              Delete
-            </span>
-          </div>
+        html += `
+        <div class="cart-item-container cart-item-container-${cartItem.productId}">
+        <div class="delivery-date">
+          Delivery date: ${ deliveryDate.formattedDeliveryDate}
         </div>
 
-        <div class="delivery-options ">
-          <div class="delivery-options-title">
-            Choose a delivery option:
+        <div class="cart-item-details-grid">
+          <img class="product-image"
+            src="${product.image}">
+
+          <div class="cart-item-details">
+            <div class="product-name">
+            ${product.name}
+            </div>
+            <div class="product-price">
+              $${formatCurrency(product.priceCents)}
+            </div>
+            <div class="product-quantity product-quantity-${cartItem.productId}">
+              <span >
+                Quantity: <span class="quantity-label quantity-label-${cartItem.productId}">${cartItem.quantity}</span>
+              </span>
+              <span class="update-quantity-link link-primary" data-product-id=${cartItem.productId}>
+                Update
+              </span>
+                <input class="quantity-input quantity-input-${cartItem.productId}" data-product-id=${cartItem.productId} type="number" value=${cartItem.quantity} min="1">
+                <span class="save-quantity-link link-primary" data-product-id=${cartItem.productId}>Save</span>
+              <span class="delete-quantity-link link-primary delete-quantity-link-${cartItem.productId}" data-product-id=${cartItem.productId}>
+                Delete
+              </span>
+            </div>
           </div>
-          ${deliveryOptionsHTML(cartItem)}
+
+          <div class="delivery-options ">
+            <div class="delivery-options-title">
+              Choose a delivery option:
+            </div>
+            ${deliveryOptionsHTML(cartItem)}
+          </div>
         </div>
       </div>
-    </div>
-      ` 
+        ` ;
+    };
+  } else {
+    html = `<h4 class="empty-message">Cart is empty. Choose a product first!</h4>`
   };
-
   
-
+  document.querySelector('.order-summary').innerHTML = html;
   function deliveryOptionsHTML(cartItem) {
     let html = '';
     deliveryOptions.forEach(deliveryOption => {
@@ -86,7 +89,6 @@ export async function renderOrderSummary() {
     return html;
   }
 
-  document.querySelector('.order-summary').innerHTML = html;
 
   const updateButtons = document.querySelectorAll('.update-quantity-link');
 

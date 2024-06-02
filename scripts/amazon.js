@@ -1,36 +1,42 @@
-import { loadProducts } from '../data/products.js';
+import { loadProducts, PRODUCTS_PER_PAGE } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 import cartObj from '../data/cart.js';
+import { renderSpinner, removeSpinner } from './amazon/spinner.js';
 
 
 async function loadHomePage(){
 
   let products = await loadProducts();
-  const productsPerPage = 12;
-  const numberOfPages = Math.ceil(products.length/productsPerPage);
+
+  let numberOfPages = Math.ceil(products.length/PRODUCTS_PER_PAGE);
   let pageTracker = 1;
 
-  const url = new URL(window.location.href);
-  const isSearchParam = url.searchParams.get('search');
-  const urlPage = url.searchParams.get('page');
-  if(urlPage) pageTracker = +urlPage;
+  let isSearchParam;
+  let url;
 
-  if(isSearchParam) {
-    const product = products.filter(prod => {
-      const prodName = prod.name.toLowerCase().includes(isSearchParam);
-      const keywords = prod.keywords.some(keyword => keyword === isSearchParam.toLocaleLowerCase());
-      if(prodName || keywords) return prod; 
-    });
-    products = [...product];
-  }
+  let modifiedProductsList;
 
   function renderHomePageHTML(){
     let html = '';
-    const firstProd = (pageTracker - 1) * productsPerPage;
-    const lastProd = productsPerPage * pageTracker;
+    url = new URL(window.location.href);
+    isSearchParam = url.searchParams.get('search');
     
-    products.slice(firstProd,lastProd).forEach((product) => {
+    const firstProd = (pageTracker - 1) * PRODUCTS_PER_PAGE;
+    const lastProd = PRODUCTS_PER_PAGE * pageTracker;
+    modifiedProductsList = products.slice(firstProd,lastProd);
 
+    if(isSearchParam) {
+      console.log('Enter key pressed:', isSearchParam);
+
+      const product = products.filter(prod => {
+        const prodName = prod.name.toLowerCase().includes(isSearchParam);
+        const keywords = prod.keywords.some(keyword => keyword === isSearchParam.toLocaleLowerCase());
+        if(prodName || keywords) return prod; 
+      });
+      modifiedProductsList = [...product];
+    };
+
+    modifiedProductsList.forEach((product) => {
       html += `
       <div class="product-container">
       <div class="product-image-container">
@@ -83,7 +89,7 @@ async function loadHomePage(){
       </button>
     </div>`;
   });
-
+  //removeSpinner();
   document.querySelector('.products-grid').innerHTML = html;
   const addToCartBtns = document.querySelectorAll('.add-to-cart-button');
 
@@ -101,7 +107,9 @@ async function loadHomePage(){
         if(addedTimeout) clearTimeout(addedTimeout);
 
         const addedTimeoutMessage = setTimeout(() => {
+          if(document.querySelector(`.added-to-cart-${productId}`)){
             document.querySelector(`.added-to-cart-${productId}`).style.opacity = 0; 
+          }
         },1000)
 
         addedTimeout = addedTimeoutMessage;
@@ -109,36 +117,51 @@ async function loadHomePage(){
         cartObj.addToCart(productId,quantity);
         
     });
+    renderPaginationHTML();
   });
   cartObj.updateCartQuantity('.cart-quantity');
 };
 
+ function handleSearch(){
+  const searchParam = document.querySelector('.search-bar').value;
+  if(searchParam){
+    const newUrl = `index.html?search=${searchParam}`;
+    window.history.pushState({ path: newUrl }, '', newUrl);
+  }
+  renderHomePageHTML()
+}
   document.querySelector('.search-button')
-    .addEventListener('click', async function(){
-      const searchParam = await document.querySelector('.search-bar').value;
-      window.location.href = `index.html?search=${searchParam}`;
+    .addEventListener('click', function(){
+      handleSearch()
     });
 
-    window.addEventListener('keydown', async function(e){
-      if(e.key === 'Enter'){
-        const searchParam = await document.querySelector('.search-bar').value;
-        window.location.href = `index.html?search=${searchParam}`;
-      }
-    });
+  window.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+      handleSearch()
+    }
+  });
+
 
   function renderPaginationHTML() {
     let html = '';
+    const urlPage = url.searchParams.get('page');
+    if(urlPage) pageTracker = +urlPage;
+    if(isSearchParam){
+      numberOfPages = Math.ceil(modifiedProductsList.length/PRODUCTS_PER_PAGE);
+      if(numberOfPages < 2) numberOfPages = 0;
+    }
+    
     for(let i=1; i<=numberOfPages; i++){
       html += `
       <li class="page-item" style="cursor:pointer"><a class="page-link ${pageTracker === i ? 'active' : ''}" >${i}</a></li>
       `;
     }
-
     document.querySelector('.pagination').innerHTML = html;
 
     document.querySelectorAll('.page-item')
     .forEach(pageNum => {
       pageNum.addEventListener('click', function(){
+        
         pageTracker = +pageNum.textContent;
         const newUrl = `index.html?page=${pageTracker}`;
         window.history.pushState({ path: newUrl }, '', newUrl);
