@@ -25,7 +25,7 @@ export function getDeliveryOption(deliveryOptionId) {
     deliveryOptions.forEach(option => {
       if(option.id === deliveryOptionId) deliveryOption = option;
     });
-    //console.log(deliveryOption)
+    console.log(deliveryOptionId)
     return deliveryOption || deliveryOption[0];
 };
 
@@ -49,23 +49,13 @@ export function calculateDeliveryDate(deliveryOption, deliveryDateArg ) {
 
 export function getDeliveryDate(estimatedDeliveryTime,orderTime){
     const deliveryDays = Math.round((dayjs(estimatedDeliveryTime) - dayjs(orderTime))/86400000);
-    /*function getId(deliveryDays){
-        let id;
-        if(deliveryDays === 7) id='1';
-        if(deliveryDays === 3) id='2';
-        if(deliveryDays === 1) id='3';
-        return id;
-    };*/
 
     const deliveryOptionId = deliveryOptions.find(option => {
-        if(option.deliveryDays === deliveryDays){
-            return option.id;
-        }
-        
+        if(option.deliveryDays === deliveryDays) return option.id;
+ 
     });
-    console.log(deliveryOptionId)
-    //const deliveryOptionId =  getId(deliveryDays);
-    const deliveryOption = getDeliveryOption(deliveryOptionId);
+
+    const deliveryOption = getDeliveryOption(deliveryOptionId.id);
 
     const deliveryDate = calculateDeliveryDate(deliveryOption, orderTime);
     return deliveryDate;
