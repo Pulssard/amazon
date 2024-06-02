@@ -61,7 +61,10 @@ import { addOrder } from '../../data/orders.js';
     if(cart.length === 0) {
         paymentSummaryHTML = '';
 
-    }else{
+    }
+    document.querySelector('.payment-summary').innerHTML = paymentSummaryHTML;
+    
+    if(cart.length > 0){
         document.querySelector('.place-order-button')
         .addEventListener('click', async () => {
             try{
@@ -82,10 +85,8 @@ import { addOrder } from '../../data/orders.js';
             }
             cartObj.emptyCart();
             window.location.href = 'orders.html';
-        });
+        }); 
     }
-    document.querySelector('.payment-summary').innerHTML = paymentSummaryHTML;
-
-    
+       
 };
 

@@ -9,8 +9,8 @@ async function renderOrderHTML(){
     let html = '';
     
     const orders = await loadOrders();
-
-    if(orders[0].errorMessage){
+    console.log(orders)
+    if(!orders || orders[0].errorMessage){
         html = `
         <h4 class="empty-message">Your order history is empty. Make a purchase first!</h4>
         `;

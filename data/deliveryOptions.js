@@ -21,11 +21,11 @@ const deliveryOptions = [
 export function getDeliveryOption(deliveryOptionId) {
 
     let deliveryOption;
-
+    console.log(deliveryOptionId)
     deliveryOptions.forEach(option => {
-      if(option.id === deliveryOptionId) deliveryOption=option;
+      if(option.id === deliveryOptionId) deliveryOption = option;
     });
-
+    //console.log(deliveryOption)
     return deliveryOption || deliveryOption[0];
 };
 
@@ -58,9 +58,12 @@ export function getDeliveryDate(estimatedDeliveryTime,orderTime){
     };*/
 
     const deliveryOptionId = deliveryOptions.find(option => {
-        option.deliveryDays === deliveryDays;
-        return option.id;
+        if(option.deliveryDays === deliveryDays){
+            return option.id;
+        }
+        
     });
+    console.log(deliveryOptionId)
     //const deliveryOptionId =  getId(deliveryDays);
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
