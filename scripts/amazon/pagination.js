@@ -1,6 +1,5 @@
 import {PRODUCTS_PER_PAGE} from '../../data/products.js';
 import { renderSpinner } from './spinner.js';
-import {renderHomePageHTML} from '../amazon.js'
 
 export function renderPaginationHTML(isSearchParam,modifiedProductsList,numberOfPages,pageTracker,renderHomePageHTML) {
     let html = '';

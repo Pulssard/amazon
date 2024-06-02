@@ -26,8 +26,6 @@ async function loadHomePage(){
     modifiedProductsList = products.slice(firstProd,lastProd);
 
     if(isSearchParam) {
-      console.log('Enter key pressed:', isSearchParam);
-
       const product = products.filter(prod => {
         const prodName = prod.name.toLowerCase().includes(isSearchParam);
         const keywords = prod.keywords.some(keyword => keyword === isSearchParam.toLocaleLowerCase());

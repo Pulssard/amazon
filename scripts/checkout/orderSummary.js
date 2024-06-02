@@ -8,7 +8,7 @@ export async function renderOrderSummary() {
   const cart =  cartObj.cart;
 
   let html = '';
-  console.log(cart)
+
   if(cart.length > 0){
     for (const cartItem of cart) {
       const product = await getProduct(cartItem.productId);
