@@ -3,13 +3,14 @@ import { formatCurrency } from '../utils/money.js';
 import deliveryOptions, { calculateDeliveryDate, getDeliveryOption } from '../../data/deliveryOptions.js';
 import {renderPaymentSummary} from './paymentSummary.js';
 import cartObj from '../../data/cart.js';
-
+import { renderSpinner, removeSpinner } from '../amazon/spinner.js';
 export async function renderOrderSummary() {
-  const cart =  cartObj.cart;
+
+  const cart =  cartObj.cart;//getting the dat form the cart
 
   let html = '';
 
-  if(cart.length > 0){
+  if(cart.length > 0){//checking if there are any products in the cart, if so, they are rendered
     for (const cartItem of cart) {
       const product = await getProduct(cartItem.productId);
       
@@ -60,11 +61,13 @@ export async function renderOrderSummary() {
         ` ;
     };
   } else {
-    html = `<h4 class="empty-message">Cart is empty. Choose a product first!</h4>`
+    html = `<h4 class="empty-message">Cart is empty. Choose a product first!</h4>`//if there are no products, is rendered the message that announce it
   };
-  
+  removeSpinner();
   document.querySelector('.order-summary').innerHTML = html;
-  function deliveryOptionsHTML(cartItem) {
+
+  function deliveryOptionsHTML(cartItem) {//rendering the delviery options of the products in the cart.the function is called inside the one rendering the products in the cart
+                                          //so if the cart is empty, this function will note be called;
     let html = '';
     deliveryOptions.forEach(deliveryOption => {
 
@@ -91,7 +94,7 @@ export async function renderOrderSummary() {
 
 
   const updateButtons = document.querySelectorAll('.update-quantity-link');
-
+//dinamically rendering the inputs and buttons of the prodcuts(update, quantity,save)
   updateButtons.forEach(updateBtn => {
     updateBtn.addEventListener('click', function(){
       const productId = updateBtn.dataset.productId;
@@ -103,7 +106,7 @@ export async function renderOrderSummary() {
 
   function saveNewInput(productId) { 
     const newQuantity = +document.querySelector(`.quantity-input-${productId}`).value;
-    if(newQuantity <= 0 || newQuantity >=1000) {
+    if(newQuantity <= 0 || newQuantity >=1000) {//validating the inputs
       alert('Input invalid. Please select a quantity between 1 and 999');
       return;
     }
@@ -126,7 +129,7 @@ export async function renderOrderSummary() {
 
   
   const deleteBtns = document.querySelectorAll('.delete-quantity-link');
-
+//based on each products dataset product-id is possible to delete products specifically by their id
   deleteBtns.forEach(btn => {
       btn.addEventListener('click', function() {
         const productId = btn.dataset.productId;
@@ -135,7 +138,7 @@ export async function renderOrderSummary() {
         renderPaymentSummary();
       });    
   });
-
+//modifying the delivery option as user wants it
   document.querySelectorAll('.delivery-option')
     .forEach(el => {
       el.addEventListener('click', () => {

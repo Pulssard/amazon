@@ -18,7 +18,7 @@ const deliveryOptions = [
     }
 ];
 
-export function getDeliveryOption(deliveryOptionId) {
+export function getDeliveryOption(deliveryOptionId) {//based on the value provided, the function return the delivery option(either 1,3 or 7 days)
     let deliveryOption;
     deliveryOptions.forEach(option => {
       if(option.id === deliveryOptionId) deliveryOption = option;
@@ -26,12 +26,12 @@ export function getDeliveryOption(deliveryOptionId) {
     return deliveryOption || deliveryOption[0];
 };
 
-export function calculateDeliveryDate(deliveryOption, deliveryDateArg ) {
-    let deliveryDate = deliveryDateArg ? dayjs(deliveryDateArg) : dayjs();
+export function calculateDeliveryDate(deliveryOption, deliveryDateArg ) {//based on the deliveryOption or deliveryData(when it should be delivered)
+    let deliveryDate = deliveryDateArg ? dayjs(deliveryDateArg) : dayjs();//is calculated the time of delivery, excluding weekends.
 
     let addShippingDays = deliveryOption.deliveryDays;
 
-    while (addShippingDays > 0) {
+    while (addShippingDays > 0) {//considering that deliveryDate is considered to be the amount of working days, the weekend are being skipped
         deliveryDate = deliveryDate.add(1, 'day');
         
         if (deliveryDate.day() !== 6 && deliveryDate.day() !== 0) {
@@ -44,17 +44,14 @@ export function calculateDeliveryDate(deliveryOption, deliveryDateArg ) {
     return {formattedDeliveryDate,deliveryDate};
 };
 
-export function getDeliveryDate(estimatedDeliveryTime,orderTime){
-    const deliveryDays = Math.round((dayjs(estimatedDeliveryTime) - dayjs(orderTime))/86400000);
-
+export function getDeliveryDate(estimatedDeliveryTime,orderTime){//since order object is provided by the supersimplebackend API, which does not
+    const deliveryDays = Math.round((dayjs(estimatedDeliveryTime) - dayjs(orderTime))/86400000);//take into count the weekends, based on the input gottten from the api, I changed them so that they would consider the weekends as in the function above
+    //get the amount of days to deliver
     const deliveryOptionId = deliveryOptions.find(option => {
-        if(option.deliveryDays === deliveryDays) return option.id;
- 
-    });
+        if(option.deliveryDays === deliveryDays) return option.id; 
+    });//based on deliveryDays, get the deliveryOption
 
-    const deliveryOption = getDeliveryOption(deliveryOptionId.id);
-
-    const deliveryDate = calculateDeliveryDate(deliveryOption, orderTime);
+    const deliveryDate = calculateDeliveryDate(deliveryOptionId, orderTime);//based on delivery option, get the updated deliveryDate
     return deliveryDate;
 }
 

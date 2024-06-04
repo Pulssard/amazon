@@ -8,21 +8,21 @@ async function renderTrackingHTML() {
     const url = new URL(window.location.href);
     const productId = url.searchParams.get('productId');
     const orderId = url.searchParams.get('orderId');
-
+//getting via the url parameters the order and product id's, and using them, the order and product themselves
     const product = await getProduct(productId);
     const order = await getOrder(orderId);
-
+//after that, desctructure the quantity and estimated delivery time that is used further
     const {quantity, estimatedDeliveryTime} =  order.products.find(product => product.productId === productId);
-    
+    //calculating the real delivery time, considering the weekends;
     const deliveryDate = getDeliveryDate(estimatedDeliveryTime, order.orderTime)
-
+//setting all the data to be the same type, so it would be possible to make calculations
     const currentTime = dayjs();
     const orderTime = dayjs(order.orderTime);
     const deliveryTime = dayjs(deliveryDate.deliveryDate);
  
-    const percentProgressiveBar = ((currentTime - orderTime) / (deliveryTime - orderTime)) * 100;
+    const percentProgressiveBar = ((currentTime - orderTime) / (deliveryTime - orderTime)) * 100;//getting the percentage of time passed until delivery
 
-
+//rendering the product, and based on time passed, dinamically setting the status(preparing, shipped, delivered);
     const html = `<div class="order-tracking">
     <a class="back-to-orders-link link-primary" href="orders.html">
         View all orders
@@ -40,7 +40,7 @@ async function renderTrackingHTML() {
         Quantity: ${quantity}
     </div>
 
-    <img class="product-image" src="${product.image}">
+    <img class="product-image" src="${product.image}" loading="lazy">
 
     <div class="progress-labels-container">
         <div class="progress-label ${percentProgressiveBar < 50 ? 'current-status' : ''}"  >
@@ -60,7 +60,8 @@ async function renderTrackingHTML() {
     </div>`
 
     document.querySelector('.main').innerHTML = html;
-    document.querySelector('.progress-bar').style.width = `${percentProgressiveBar}%`;
+    document.querySelector('.progress-bar').style.width = `${percentProgressiveBar}%`;//setting the progres bar dinamically, to be equal with the time passed 
+    //until delivery date
 
     cartObj.updateCartQuantity('.cart-quantity');
 

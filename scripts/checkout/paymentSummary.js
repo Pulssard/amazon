@@ -10,9 +10,9 @@ import { addOrder } from '../../data/orders.js';
 
     let productPriceCents = 0;
     let shippingPriceCents = 0;    
-    if(cart){
+    if(cart){//products grid inside the cart page are rendered only if there is a cart array, so the would not be any errors and unexpected behaviour
         for(const cartItem of cart) {
-            const product = await getProduct(cartItem.productId);
+            const product = await getProduct(cartItem.productId);//using await to get the products, since getProduct is also a asynchronous function.
             productPriceCents += product.priceCents * cartItem.quantity;
 
             const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId);
@@ -58,7 +58,7 @@ import { addOrder } from '../../data/orders.js';
         </button>
     `;
 
-    if(cart.length === 0) {
+    if(cart.length === 0) {//if cart is empty, the payment section is not rendered
         paymentSummaryHTML = '';
 
     }
@@ -66,25 +66,25 @@ import { addOrder } from '../../data/orders.js';
     
     if(cart.length > 0){
         document.querySelector('.place-order-button')
-        .addEventListener('click', async () => {
+        .addEventListener('click', async () => {//making a post request to the server, and providing as data in the body the cart array
             try{
                 const response = await fetch('https://supersimplebackend.dev/orders', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
+                    body: JSON.stringify({//transformig the array into a json object , as HTTP protocol uses JSON for communicating 
                         cart: cart
                     })
                 });
     
-               const order = await response.json();
-               addOrder(order);
-            } catch(err) {
+               const order = await response.json();//getting the response from the backend
+               addOrder(order);//adding the order to the orders array in the local storage
+            } catch(err) {//if there is any errot it would automatically be catched here
                 console.log(err);
             }
-            cartObj.emptyCart();
-            window.location.href = 'orders.html';
+            cartObj.emptyCart();//clearing the cart localStorage, after clicking the payment button
+            window.location.href = 'orders.html';//transfering to the orders page
         }); 
     }
        
