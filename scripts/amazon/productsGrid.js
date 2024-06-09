@@ -146,7 +146,8 @@ if(modifiedProductsList.length > 0){
     }
     });
 
-    renderPaginationHTML(paginationParams, renderHomePageHTML);//rendering the pagination, based on the new parameters, such as pageTracker, or search params
+    //rendering the pagination, based on the new parameters, such as pageTracker, or search params
+    renderPaginationHTML(paginationParams, renderHomePageHTML);
 };
 
 

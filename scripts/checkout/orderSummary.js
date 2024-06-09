@@ -3,7 +3,13 @@ import { formatCurrency } from '../utils/money.js';
 import deliveryOptions, { calculateDeliveryDate, getDeliveryOption } from '../../data/deliveryOptions.js';
 import {renderPaymentSummary} from './paymentSummary.js';
 import cartObj from '../../data/cart.js';
-import { renderSpinner, removeSpinner } from '../amazon/spinner.js';
+import {removeSpinner } from '../amazon/spinner.js';
+import { renderToastHTML } from '../utils/renderPopUp.js';
+
+
+
+
+
 export async function renderOrderSummary() {
 
   const cart =  cartObj.cart;//getting the dat form the cart
@@ -106,8 +112,9 @@ export async function renderOrderSummary() {
 
   function saveNewInput(productId) { 
     const newQuantity = +document.querySelector(`.quantity-input-${productId}`).value;
-    if(newQuantity <= 0 || newQuantity >=1000) {//validating the inputs
-      alert('Input invalid. Please select a quantity between 1 and 999');
+    if(newQuantity <= 0 || newQuantity >=100) {//validating the inputs
+      /*alert('Input invalid. Please select a quantity between 1 and 999');*/
+      renderToastHTML('alert');
       return;
     }
     cartObj.updateQuantity(productId, newQuantity);
@@ -136,6 +143,7 @@ export async function renderOrderSummary() {
         cartObj.removeProducts(productId);
         renderOrderSummary();
         renderPaymentSummary();
+        renderToastHTML('info');
       });    
   });
 //modifying the delivery option as user wants it

@@ -4,8 +4,8 @@ import { formatTime } from './utils/time.js'
 import { getDeliveryDate } from "../data/deliveryOptions.js";
 import { getProduct } from '../data/products.js';
 import cartObj from '../data/cart.js';
-import {renderSpinner, removeSpinner} from '../scripts/amazon/spinner.js'
-
+import {removeSpinner} from '../scripts/amazon/spinner.js'
+import { renderToastHTML } from './utils/renderPopUp.js';
 
 async function renderOrderHTML(){    
     //renderSpinner();
@@ -93,6 +93,7 @@ document.querySelectorAll('.buy-again-button')//on clicking buy again, the produ
     btn.addEventListener('click', () => {
         const {productId} = btn.dataset;
         cartObj.addToCart(productId);
+        renderToastHTML('success');
     });
 });
 
