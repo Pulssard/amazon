@@ -54,14 +54,18 @@ async function renderTrackingHTML() {
         </div>
     </div>
 
-    <div class="progress-bar-container">
+
+    <!-- <div class="progress-bar-container">
         <div class="progress-bar"></div>
-    </div>
+    </div> -->
+
+<div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: ${percentProgressiveBar+2}%"></div> 
+</div>
+    
     </div>`
 
-    document.querySelector('.main').innerHTML = html;
-    document.querySelector('.progress-bar').style.width = `${percentProgressiveBar}%`;//setting the progres bar dinamically, to be equal with the time passed 
-    //until delivery date
+    $('.main').html(html);
 
     cartObj.updateCartQuantity('.cart-quantity');
 

@@ -52,7 +52,7 @@ class Cart {
             this.cart.forEach(prod => cartQuantity+= prod.quantity);
             //getting the total amount of products to be displayed
         }
-        if(updateNode) document.querySelector(updateNode).innerHTML = cartQuantity;//updating the DOM Tree, if there was provided the class
+        if(updateNode) $(updateNode).html(cartQuantity);//updating the DOM Tree, if there was provided the class
         return cartQuantity;//if the class is not provided, we get only the amount, 
                             //so that the method could be used in some other places(paymentSummary for eg)
     };

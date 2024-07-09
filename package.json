@@ -1,0 +1,15 @@
+{
+  "name": "javascript-amazon-project",
+  "version": "1.0.0",
+  "description": "This is a simple clone of the amazon marketplace, where the user can add products to cart, delete and updating the quantity, checking the previous orders, as well as tracking the status of the order(if it is preparing, shipping or delviered), based on time passed from the order time and until delviery date. Delivery Date is calculated considering the weekends, and eliminating the from the total days count.\r Also the user can search for the products, using the search bar(finding prudcts either containg in the keywrds the value searched for, or included in its name).",
+  "main": "index.js",
+  "scripts": {
+    "sass": "sass --watch --no-source-map style:css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.77.6"
+  }
+}

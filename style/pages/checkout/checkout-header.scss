@@ -1,0 +1,84 @@
+
+@import '../../shared/base';
+
+.checkout-header {
+  @include header-style;
+  height: 60px;
+  padding-left: 30px;
+  padding-right: 30px;
+  background-color: white;
+  justify-content: center;
+
+  .header-content {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    align-items: center;
+  }
+
+  .checkout-header-left-section {
+    width: 150px;
+
+    @include respond-to(xs) {
+      width: auto;
+    }
+  }
+
+  .amazon-logo {
+    width: 100px;
+    margin-top: 12px;
+
+    @include respond-to(xs) {
+      display: none;
+    }
+  }
+
+  .amazon-mobile-logo {
+    display: none;
+
+    @include respond-to(xs) {
+      display: inline-block;
+      height: 35px;
+      margin-top: 5px;
+    }
+  }
+
+  .checkout-header-middle-section {
+    flex: 1;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+
+    @include respond-to(md) {
+      font-size: 20px;
+      margin-right: 60px;
+    }
+
+    @include respond-to(xs) {
+      margin-right: 5px;
+    }
+  }
+
+  .return-to-home-link {
+    color: rgb(0, 113, 133);
+    font-size: 23px;
+    text-decoration: none;
+    cursor: pointer;
+
+    @include respond-to(md) {
+      font-size: 18px;
+    }
+  }
+
+  .checkout-header-right-section {
+    text-align: right;
+    width: 150px;
+
+    @include respond-to(md) {
+      width: auto;
+    }
+  }
+}

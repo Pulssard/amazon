@@ -1,17 +1,18 @@
 import {renderOrderSummary} from '../../scripts/checkout/orderSummary.js';
-import { getCart } from '../../data/cart.js';
+import cartObj from '../../data/cart.js';
 
 describe('test suite: renderOrderSummary', () => {
     const productId2 = 'dd82ca78-a18b-4e2a-9250-31e67412f98d';
     const productId1 = "e43638ce-6aa0-4b85-b27f-e1d07eb678c6";
-    beforeEach(() => {
-        spyOn(localStorage, 'setItem');
 
-        document.querySelector('.js-test-container').innerHTML = `
+    beforeEach( async () => {
+        spyOn(localStorage, 'setItem');
+        
+        $('.js-test-container').html(`
         <div class="order-summary"></div>
         <div class="checkout-items"></div>
         <div class="payment-summary"></div>
-        `;
+        `);
 
         spyOn(localStorage, 'getItem').and.callFake(() => {
             return JSON.stringify([
@@ -27,28 +28,31 @@ describe('test suite: renderOrderSummary', () => {
             ]);
         });
 
-
-        getCart();
-        renderOrderSummary();
+        cartObj.getCart();
+        await renderOrderSummary();
     });
-    it('displays the cart', () => {
 
-        expect(document.querySelectorAll('.cart-item-container').length)
+    afterAll(() => {
+        $('.js-test-container').html('');
+    })
+    
+    it('displays the cart', () => {
+        expect($('.cart-item-container').length)
             .toEqual(2);
         expect(
-            document.querySelector(`.product-quantity-${productId1}`).innerText
+            $(`.product-quantity-${productId1}`).text()
         ).toContain('Quantity: 3');
-        document.querySelector('.js-test-container').innerHTML = '';
     });
 
-    it('removes a product',  () => {
-        document.querySelector(`.delete-quantity-link-${productId2}`).click();
-        
-        //expect(document.querySelectorAll('.cart-item-container').length).toEqual(1);
-        setTimeout(() => {
-            expect(document.querySelectorAll('.cart-item-container').length).toEqual(1);
+    it('removes a product',  (done) => {
+       $(`.delete-quantity-link-${productId2}`).click();
+         setTimeout(() => {
+            expect($('.cart-item-container').length).toEqual(1);
+            expect($(`.cart-item-container-${productId2}`).length).toEqual(0);
+            expect($(`.cart-item-container-${productId1}`)).not.toEqual(null);
+            expect(cartObj.cart.length).toEqual(1);
+            expect(cartObj.cart[0].productId).toEqual(productId1);
             done();
         }, 100);
-        document.querySelector('.js-test-container').innerHTML = '';
     });
 });

@@ -1,0 +1,92 @@
+// Variables
+$primary-color: rgb(33, 33, 33);
+$secondary-color: rgb(213, 217, 217);
+$highlight-color: rgb(255, 216, 20);
+
+// Mixins
+@mixin header-style{
+  z-index: 1000;
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+@mixin button-styles($background-color, $border-color) {
+  color: $primary-color;
+  background-color: $background-color;
+  border: 1px solid $border-color;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba($secondary-color, 0.5);
+
+  &:hover {
+    background-color: lighten($background-color, 5%);
+    border: 1px solid lighten($border-color, 5%);
+  }
+
+  &:active {
+    background: $background-color;
+    border-color: $border-color;
+    box-shadow: none;
+  }
+}
+
+// Mixin for toast styles
+@mixin toast-styles($background-color, $text-color, $border-color) {
+  background-color: $background-color;
+  color: $text-color;
+  border-color: $border-color;
+
+  .toast-header {
+    border-color: $border-color;
+  }
+}
+
+
+// Variables for screen width aliases
+$screen-aliases: (
+  xs: 450px,
+  sm: 575px,
+  md: 800px,
+  lg: 1000px,
+  xl: 1300px,
+  xxl: 1600px,
+  xxxl: 2000px
+);
+
+// Function to generate grid columns based on screen width alias
+@function generate-grid-columns($alias) {
+  $width: map-get($screen-aliases, $alias);
+  
+  @if $alias == xs {
+    @return repeat(1, 1fr);
+  } @else if $alias == sm {
+    @return repeat(2, 1fr);
+  } @else if $alias == md {
+    @return repeat(3, 1fr);
+  } @else if $alias == lg {
+    @return repeat(4, 1fr);
+  } @else if $alias == xl {
+    @return repeat(5, 1fr);
+  } @else if $alias == xxl {
+    @return repeat(6, 1fr);
+  } @else if $alias == xxxl {
+    @return repeat(7, 1fr);
+  } @else {
+    @return repeat(8, 1fr); // Default to 8 columns for unknown alias
+  }
+};
+
+// Mixin for responsive design
+
+@mixin respond-to($breakpoint) {
+  $width: map-get($screen-aliases, $breakpoint); // Get the actual width from the map
+  @if $width {
+    @media (max-width: $width) {
+      @content;
+    }
+  } @else {
+    @warn "No value found in \$screen-aliases for '#{$breakpoint}'";
+  }
+}

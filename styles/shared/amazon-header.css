@@ -3,11 +3,11 @@
   color: white;
   padding-left: 15px;
   padding-right: 15px;
-
+  z-index:1000;
+  justify-content: space-between;
+  
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
   position: fixed;
   top: 0;
   left: 0;

@@ -6,10 +6,11 @@ import { renderPaginationHTML } from './pagination.js';
 import { handleSearch } from '../../data/search.js';
 import { calculatePagesNumber } from '../utils/pages.js';
 
-export  async function renderHomePageHTML(pageTracker = 1){
+export  async function renderHomePageHTML(pageTracker = 1, filterProd='all', passedProducts){
+    
     renderSpinner();//renders the spinner until the products are rendered
-
-    let products = await loadProducts();//getting the products list
+    
+    let products = passedProducts || await loadProducts();//getting the products list
 
     let html = '';
 
@@ -20,10 +21,7 @@ export  async function renderHomePageHTML(pageTracker = 1){
     let numberOfPages = calculatePagesNumber(products);//getting the amount of pages needed to be rendered, based on the products array length
     if(isPageParam && isPageParam < numberOfPages) pageTracker = +isPageParam;
 
-    const firstProd = (pageTracker - 1) * PRODUCTS_PER_PAGE;//setting the start index of the product to start with
-    const lastProd = PRODUCTS_PER_PAGE * pageTracker; //setting the last index of the product to render on the page
 
-    let modifiedProductsList = products.slice(firstProd,lastProd);//based on amount of products per page, modifying the array to be displayed;
 
     if(isSearchParam) {//checking if there is a product searched and if the value is either a keyword for a certain product, or a component of its name
         const product = products.filter(prod => {
@@ -34,13 +32,59 @@ export  async function renderHomePageHTML(pageTracker = 1){
         modifiedProductsList = [...product];
     };
 
-    const paginationParams = {//setting an object of values that will be transmitted s parameters for pagination function
+    if(filterProd && filterProd !== 'all'){
+        const product = products.filter(prod => prod.keywords.includes(filterProd));
+           products = [...product];
+           numberOfPages = calculatePagesNumber(products);
+        }
+
+    $('.dropdown-item.filter').removeClass('active');
+    $(`.${filterProd}`).addClass('active');
+    
+    $(`.sort`).on('click', function() {
+        $('.sort').removeClass('active')
+        $(this).addClass('active');
+    })
+
+    $('.filter').each(function(){
+        $(this).on('click', e => {
+            const filteredProd = e.target.dataset.filterProd;
+            const newUrl = `index.html`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+           renderHomePageHTML(1,filteredProd)
+        });
+    });
+
+    $('.sort').each(function(){
+        $(this).on('click', e => {
+            const sortVal = e.target.dataset.sortVal;
+
+            if(sortVal === 'asc') {
+                products = products.sort((a,b) => a.priceCents - b.priceCents);
+            }else{
+                products = products.sort((a,b) => b.priceCents - a.priceCents);
+            }
+
+            renderHomePageHTML(1,'all', products)
+        });
+    });
+
+    const firstProd = (pageTracker - 1) * PRODUCTS_PER_PAGE;//setting the start index of the product to start with
+    const lastProd = PRODUCTS_PER_PAGE * pageTracker; //setting the last index of the product to render on the page
+    
+    //based on amount of products per page, modifying the array to be displayed;
+    let modifiedProductsList = products.slice(firstProd,lastProd);
+
+    //setting an object of values that will be transmitted s parameters for pagination function
+    const paginationParams = {
         isSearchParam,
         url,
         modifiedProductsList,
         pageTracker,
         numberOfPages,
+        filterProd,
     };
+//modifiedProductsList = modifiedProductsList.slice(filterProd,lastProd)    
 //dinamically rendering the products, considering the pagination and if a product was search for or not
 if(modifiedProductsList.length > 0){
     modifiedProductsList.forEach((product) => {
@@ -102,44 +146,45 @@ if(modifiedProductsList.length > 0){
 
     removeSpinner();//removing the spinner right before the DOM to be rendered
 
-    document.querySelector('.products-grid').innerHTML = html;
-    
-    const addToCartBtns = document.querySelectorAll('.add-to-cart-button');
+    $('.products-grid').html(html);
+   
+    const addToCartBtns = $('.add-to-cart-button');
 //adding a pop-up that shows if a product was added to cart;
-    addToCartBtns.forEach((btn) => {
+    addToCartBtns.each(function() {
     let addedTimeout;
-    btn.addEventListener('click', () => {
+    $(this).on('click', () => {
 
-        const productId= btn.dataset.productId;
+        const productId= $(this).data('product-id');
         
-        const selectedProdQuant = document.querySelector(`.js-quantity-selector-${productId}`);
-        const quantity = +selectedProdQuant.value;
+        const selectedProdQuant = $(`.js-quantity-selector-${productId}`);
+        const quantity = +selectedProdQuant.val();
 
-        
-        document.querySelector(`.added-to-cart-${productId}`).style.opacity = 1;
+        $(`.added-to-cart-${productId}`).css('opacity', 1);
+
         if(addedTimeout) clearTimeout(addedTimeout);//if there is already a timeout, it is removed, and the time goes all over again.
 
         const addedTimeoutMessage = setTimeout(() => {
-            if(document.querySelector(`.added-to-cart-${productId}`)){
-            document.querySelector(`.added-to-cart-${productId}`).style.opacity = 0; 
+            if($(`.added-to-cart-${productId}`)){
+            $(`.added-to-cart-${productId}`).css('opacity', 0); 
             }
         },1000)
 
         addedTimeout = addedTimeoutMessage;//resetting the timeout pointer to the newly one declared above;
 
-        cartObj.addToCart(productId,quantity);//adding the product to the cart
+        cartObj.addToCart(productId, +quantity);//adding the product to the cart
         
     });
     });
     cartObj.updateCartQuantity('.cart-quantity');//updating the UI whe is involved the quantity value
 //handling the search initialization
-    document.querySelector('.search-button')
-    .addEventListener('click', function(){
+
+    $('.search-button')
+    .on('click', () => {
         handleSearch();
         renderHomePageHTML()
     });
 
-    window.addEventListener('keydown', function(e){
+    $(window).on('keydown', e => {
     if(e.key === 'Enter'){
         handleSearch();
         renderHomePageHTML()

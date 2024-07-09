@@ -4,7 +4,6 @@
 
 .products-grid {
   display: grid;
-
   /* - In CSS Grid, 1fr means a column will take up the
        remaining space in the grid.
      - If we write 1fr 1fr ... 1fr; 8 times, this will
@@ -15,6 +14,7 @@
        repeat(...) is a special property that works with
        display: grid; */
   grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: 1fr 1fr;
 }
 
 /* @media is used to create responsive design (making the
@@ -70,9 +70,8 @@
   padding-bottom: 25px;
   padding-left: 25px;
   padding-right: 25px;
-
-  border-right: 1px solid rgb(231, 231, 231);
-  border-bottom: 1px solid rgb(231, 231, 231);
+  margin:-0.5px;
+  border: 1px solid rgb(231, 231, 231);
 
   display: flex;
   flex-direction: column;
@@ -155,4 +154,6 @@
   border-radius: 50px;
 }
 
-
+.dropdown-item:hover, .dropdown-item.active{
+  background-color: rgba(241, 161, 56, 0.9);
+}

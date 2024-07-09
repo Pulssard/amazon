@@ -1,6 +1,6 @@
 import { calculatePagesNumber } from '../utils/pages.js';
 
-export function renderPaginationHTML({isSearchParam,modifiedProductsList,numberOfPages,pageTracker}, renderHomePageHTML) {
+export function renderPaginationHTML({isSearchParam,modifiedProductsList,numberOfPages,pageTracker,filterProd}, renderHomePageHTML) {
     let html = '';
 
     if(isSearchParam){
@@ -12,16 +12,26 @@ export function renderPaginationHTML({isSearchParam,modifiedProductsList,numberO
       <li class="page-item" style="cursor:pointer"><a class="page-link ${pageTracker === i ? 'active' : ''}" >${i}</a></li>
       `;
     }
-    document.querySelector('.pagination').innerHTML = html;
+    $('.pagination').html(html);
     
-    document.querySelectorAll('.page-item')
-    .forEach(pageNum => {
-      pageNum.addEventListener('click', async function(){
-        document.querySelector('.main').scrollIntoView({behavior:'smooth'});//scrolls to the top of the page, after the page was changed
-        pageTracker = +pageNum.textContent;
+    $('.page-item')
+    .each(function() {
+      $(this).on('click', async () => {
+        //scrolls to the top of the page, after the page was changed
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth' // Smooth scrolling
+      });
+      
+        //Update the page tracker value
+        pageTracker = $(this).text();
+        
+        //setting the page parameter in the url
         const newUrl = `index.html?page=${pageTracker}`;
-        window.history.pushState({ path: newUrl }, '', newUrl);//setting the page parameter in the url
-        renderHomePageHTML(pageTracker);//re-rendering the home page, based on the current pagetracker value(chosen page);
+        window.history.pushState({ path: newUrl }, '', newUrl);
+        
+        //re-rendering the home page, based on the current pagetracker value(chosen page);
+        renderHomePageHTML(+pageTracker,filterProd);
       });
     });
   };

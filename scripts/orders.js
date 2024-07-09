@@ -4,11 +4,12 @@ import { formatTime } from './utils/time.js'
 import { getDeliveryDate } from "../data/deliveryOptions.js";
 import { getProduct } from '../data/products.js';
 import cartObj from '../data/cart.js';
-import {removeSpinner} from '../scripts/amazon/spinner.js'
+import {renderSpinner,removeSpinner} from '../scripts/amazon/spinner.js'
 import { renderToastHTML } from './utils/renderPopUp.js';
 
 async function renderOrderHTML(){    
-    //renderSpinner();
+
+    renderSpinner();
     let html = '';
     const orders = await loadOrders();//getting the orders from the localStorage
 
@@ -86,12 +87,12 @@ async function renderProductsGrid(orderItem, orderId, orderTime){
     return gridHTML;
 };   
 removeSpinner();
-document.querySelector('.orders-grid').innerHTML = html;
+$('.orders-grid').html(html);
 
-document.querySelectorAll('.buy-again-button')//on clicking buy again, the product is added to the cart(since there is no quantity to be chosen, it automatically sets 1)
-.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const {productId} = btn.dataset;
+$('.buy-again-button')//on clicking buy again, the product is added to the cart(since there is no quantity to be chosen, it automatically sets 1)
+.each(function() {
+    $(this).on('click', () => {
+        const productId = $(this).data('product-id');
         cartObj.addToCart(productId);
         renderToastHTML('success');
     });

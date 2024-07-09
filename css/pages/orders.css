@@ -4,11 +4,6 @@
   margin-bottom: 100px;
   padding-left: 20px;
   padding-right: 20px;
-
-  /* margin-left: auto;
-     margin-right auto;
-     Is a trick for centering an element horizontally
-     without needing a container. */
   margin-left: auto;
   margin-right: auto;
 }
@@ -28,34 +23,34 @@
 .order-header {
   background-color: rgb(240, 242, 242);
   border: 1px solid rgb(213, 217, 217);
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 20px 25px;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  background-color: rgb(240, 242, 242);
+  color: rgb(33, 33, 33);
+  border-color: rgb(213, 217, 217);
 }
-
-.order-header-left-section {
+.order-header .order-header-left-section {
   display: flex;
   flex-shrink: 0;
 }
-
-.order-header-label {
+.order-header .order-header-label {
   font-weight: 500;
+  margin-right: 10px;
 }
-
-.order-date,
-.order-total {
+.order-header .order-date,
+.order-header .order-total {
   margin-right: 45px;
 }
-
-.order-header-right-section {
+.order-header .order-header-right-section {
   flex-shrink: 1;
 }
-
+.order-header .toast-header {
+  border-color: rgb(213, 217, 217);
+}
 @media (max-width: 575px) {
   .order-header {
     flex-direction: column;
@@ -63,23 +58,19 @@
     line-height: 23px;
     padding: 15px;
   }
-
-  .order-header-left-section {
+  .order-header .order-header-left-section {
     flex-direction: column;
   }
-
-  .order-header-label {
+  .order-header .order-header-label {
     margin-right: 5px;
   }
-
-  .order-date,
-  .order-total {
+  .order-header .order-date,
+  .order-header .order-total {
     display: grid;
     grid-template-columns: auto 1fr;
     margin-right: 0;
   }
-
-  .order-header-right-section {
+  .order-header .order-header-right-section {
     display: grid;
     grid-template-columns: auto 1fr;
   }
@@ -91,14 +82,12 @@
   border-top: none;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-
   display: grid;
   grid-template-columns: 110px 1fr 220px;
   column-gap: 35px;
   row-gap: 60px;
   align-items: center;
 }
-
 @media (max-width: 800px) {
   .order-details-grid {
     grid-template-columns: 110px 1fr;
@@ -106,7 +95,6 @@
     padding-bottom: 8px;
   }
 }
-
 @media (max-width: 450px) {
   .order-details-grid {
     grid-template-columns: 1fr;
@@ -116,7 +104,6 @@
 .product-image-container {
   text-align: center;
 }
-
 .product-image-container img {
   max-width: 110px;
   max-height: 110px;
@@ -125,10 +112,6 @@
 .product-name {
   font-weight: 700;
   margin-bottom: 5px;
-}
-
-.product-delivery-date {
-  margin-bottom: 3px;
 }
 
 .product-quantity {
@@ -140,19 +123,48 @@
   width: 140px;
   height: 36px;
   border-radius: 8px;
-
   display: flex;
   align-items: center;
   justify-content: center;
+  color: rgb(33, 33, 33);
+  background-color: rgb(255, 216, 20);
+  border: 1px solid rgb(213, 217, 217);
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(213, 217, 217, 0.5);
 }
-
-.buy-again-icon {
+.buy-again-button:hover {
+  background-color: #ffdc2e;
+  border: 1px solid #e2e5e5;
+}
+.buy-again-button:active {
+  background: rgb(255, 216, 20);
+  border-color: rgb(213, 217, 217);
+  box-shadow: none;
+}
+.buy-again-button .buy-again-icon {
   width: 25px;
   margin-right: 15px;
+}
+@media (max-width: 800px) {
+  .buy-again-button {
+    margin-bottom: 10px;
+  }
 }
 
 .product-actions {
   align-self: start;
+}
+@media (max-width: 800px) {
+  .product-actions {
+    grid-column: 2;
+    margin-bottom: 30px;
+  }
+}
+@media (max-width: 450px) {
+  .product-actions {
+    grid-column: auto;
+    margin-bottom: 70px;
+  }
 }
 
 .track-package-button {
@@ -161,59 +173,12 @@
   padding: 8px;
   border-radius: 8px;
 }
-
 @media (max-width: 800px) {
-  .buy-again-button {
-    margin-bottom: 10px;
-  }
-
-  .product-actions {
-    /* grid-column: 2 means this element will be placed
-       in column 2 in the grid. (Normally, the column that
-       an element is placed in is determined by the order
-       of the elements in the HTML. grid-column overrides
-       this default ordering). */
-    grid-column: 2;
-    margin-bottom: 30px;
-  }
-
   .track-package-button {
     width: 140px;
   }
 }
-
 @media (max-width: 450px) {
-  .product-image-container {
-    text-align: center;
-    margin-bottom: 25px;
-  }
-
-  .product-image-container img {
-    max-width: 150px;
-    max-height: 150px;
-  }
-
-  .product-name {
-    margin-bottom: 10px;
-  }
-
-  .product-quantity {
-    margin-bottom: 15px;
-  }
-
-  .buy-again-button {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-
-  .product-actions {
-    /* grid-column: auto; undos grid-column: 2; from above.
-       This element will now be placed in its normal column
-       in the grid. */
-    grid-column: auto;
-    margin-bottom: 70px;
-  }
-
   .track-package-button {
     width: 100%;
     padding: 12px;

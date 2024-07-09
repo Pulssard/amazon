@@ -4,8 +4,8 @@ import { formatCurrency } from '../utils/money.js';
 import cartObj from '../../data/cart.js';
 import { addOrder } from '../../data/orders.js';
 
-
  export async function renderPaymentSummary(){
+
     const cart = cartObj.cart;
 
     let productPriceCents = 0;
@@ -62,11 +62,11 @@ import { addOrder } from '../../data/orders.js';
         paymentSummaryHTML = '';
 
     }
-    document.querySelector('.payment-summary').innerHTML = paymentSummaryHTML;
+    $('.payment-summary').html(paymentSummaryHTML);
     
     if(cart.length > 0){
-        document.querySelector('.place-order-button')
-        .addEventListener('click', async () => {//making a post request to the server, and providing as data in the body the cart array
+        $('.place-order-button')
+        .on('click', async () => {//making a post request to the server, and providing as data in the body the cart array
             try{
                 const response = await fetch('https://supersimplebackend.dev/orders', {
                     method: 'POST',

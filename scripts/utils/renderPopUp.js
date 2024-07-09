@@ -1,13 +1,13 @@
 
 
 export function renderToastHTML(messageType = 'alert'){
-    const toastGrid = document.querySelector('.toaster');
-    const existingAlert = document.querySelector(`.${messageType}`);
+    const toastGrid = $('.toaster');
+    const existingAlert = $(`.${messageType}`);
     
     if (existingAlert) {
       clearTimeout(existingAlert.timeoutId);
       existingAlert.timeoutId = setTimeout(() => {
-          existingAlert.classList.remove('show');
+          existingAlert.removeClass('show');
           setTimeout(() => existingAlert.remove(), 300);
       }, 3000);
       return;
@@ -37,23 +37,23 @@ export function renderToastHTML(messageType = 'alert'){
         </div>
       </div>`;
     
-        toastGrid.insertAdjacentHTML("afterbegin", html);
+        toastGrid.prepend(html);
     
-        const newMessage = document.querySelector('.toast');
+        const newMessage = $('.toast');
     
         setTimeout(() => {
-            newMessage.classList.add('show');
+            newMessage.addClass('show');
         }, 10);
     
-        document.querySelector('.btn-close').addEventListener('click', e => {
-          e.target.closest('.toast').classList.remove('show');
+        $('.btn-close').on('click', e => {
+          e.target.closest('.toast').removeClass('show');
           setTimeout(() => {
             e.target.closest('.toast').remove();
           },300)
         });
     
         newMessage.timeoutId = setTimeout(() => {
-          newMessage.classList.remove('show');
+          newMessage.removeClass('show');
           setTimeout(() => newMessage.remove(), 300);
       }, 3000);
     };

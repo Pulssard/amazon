@@ -1,0 +1,129 @@
+// Import base variables and mixins
+@import './base';
+
+// Import toast notifications module
+@import './toast';
+
+body {
+  font-family: Roboto, Arial;
+  color: $primary-color;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+button, input, select {
+  cursor: pointer;
+}
+
+.button-primary {
+  @include button-styles($highlight-color, rgb(252, 210, 0));
+  box-shadow: 0 2px 5px rgba($secondary-color, 0.5);
+}
+
+.button-secondary {
+  @include button-styles(white, $secondary-color);
+  box-shadow: 0 2px 5px rgba($secondary-color, 0.5);
+}
+
+.limit-text-to-2-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.link-primary {
+  color: rgb(1, 124, 182);
+  cursor: pointer;
+
+  &:hover {
+    color: rgb(196, 80, 0);
+  }
+}
+
+select {
+  color: $primary-color;
+  background-color: rgb(240, 240, 240);
+  border: 1px solid $secondary-color;
+  border-radius: 8px;
+  padding: 3px 5px;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba($secondary-color, 0.5);
+
+  &:focus {
+    outline: 2px solid rgb(255, 153, 0);
+  }
+}
+
+input:focus {
+  outline: 2px solid rgb(255, 153, 0);
+}
+
+.pagination {
+  justify-content: center;
+  margin-top: 2.2rem;
+
+  .page-link {
+    color: black;
+
+    &:hover {
+      color: black;
+    }
+  }
+
+  .page-item > .active {
+    border-color: black;
+  }
+
+  .active {
+    background-color: #ffc107;
+  }
+}
+
+.empty-message {
+  color: gray;
+  grid-area: 1 / 1 / 2 / 5;
+  margin-top: 3rem;
+}
+
+.spinner {
+  margin: 5rem auto;
+  text-align: center;
+
+  > svg {
+    height: 6rem;
+    width: 6rem;
+    fill: #ffc107;
+    animation: rotate 2s infinite linear;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.toaster {
+  position: fixed;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+
+  .toast {
+    @extend .toast; // Extend styles from _toast.scss
+
+  }
+}
+
+
+  
